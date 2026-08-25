@@ -1,0 +1,38 @@
+{
+  "name": "pi-flow",
+  "version": "0.1.0",
+  "description": "A foreground-first design, planning, TDD, execution, and review workflow for Pi",
+  "type": "module",
+  "license": "MIT",
+  "author": "Patrick Magee",
+  "keywords": [
+    "pi-package",
+    "agent-skills",
+    "workflow",
+    "tdd",
+    "code-review"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate-skills.mjs",
+    "check": "npm test && npm run validate"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/pi-flow.js"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "files": [
+    "extensions",
+    "skills",
+    "scripts",
+    "docs",
+    "tests/scenarios.md",
+    "tests/*.test.mjs",
+    "README.md",
+    "LICENSE"
+  ]
+}
