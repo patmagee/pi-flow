@@ -8,6 +8,7 @@ const expectedSkills = [
   "executing-plans-foreground",
   "planning-change-sets",
   "reviewing-change-sets",
+  "systematic-debugging",
   "test-driving-changes",
 ];
 
@@ -58,6 +59,7 @@ test("skills contain the workflow decisions that prevent orchestration bloat", a
     "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard"],
     "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md"],
     "reviewing-change-sets": ["single", "layered", "dual", "Accept", "Re-review"],
+    "systematic-debugging": ["Reproduce", "Evidence", "Hypothesis", "root cause", "three failed", "test-driving-changes", "An unverified code change is not a mitigation"],
   };
 
   for (const [name, terms] of Object.entries(required)) {
@@ -74,6 +76,7 @@ test("documentation explains installation and Superpowers coexistence", async ()
   assert.match(readme, /pi config/);
   assert.match(readme, /Superpowers Pi extension/);
   assert.match(readme, /subagent-driven-development/);
+  assert.match(readme, /systematic-debugging/);
   assert.match(readme, /Claude Code/);
 
   const license = await text("LICENSE");
@@ -89,6 +92,7 @@ test("distribution includes validation and representative scenarios", async () =
     "## Plan execution",
     "## Review findings",
     "## High-risk final review",
+    "## Debugging failure",
   ]) {
     assert.ok(scenarios.includes(heading));
   }

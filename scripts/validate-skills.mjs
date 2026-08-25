@@ -9,6 +9,7 @@ const expectedSkills = [
   "executing-plans-foreground",
   "planning-change-sets",
   "reviewing-change-sets",
+  "systematic-debugging",
   "test-driving-changes",
 ];
 const forbiddenHarnessTerms = ["TodoWrite", "AgentTool", "subagent_type", "@skills/"];
@@ -54,5 +55,5 @@ for (const name of expectedSkills) {
   }
 }
 
-assert.equal(expectedSkills.length, 5);
+assert.equal(expectedSkills.length, 6);
 console.log(`Validated ${expectedSkills.length} skills (${totalWords} words) and 1 extension.`);

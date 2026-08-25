@@ -9,7 +9,7 @@ explore → approve design → write handoff plan → implement in foreground
         → review coherent checkpoints → verify and fix claims → final validation
 ```
 
-Pi Flow includes five skills:
+Pi Flow includes six skills:
 
 | Skill | Use |
 |---|---|
@@ -18,6 +18,7 @@ Pi Flow includes five skills:
 | `test-driving-changes` | Apply red-green-refactor with risk-scaled validation. |
 | `executing-plans-foreground` | Execute plans in the main Pi session and preserve resumable state. |
 | `reviewing-change-sets` | Select one risk-based review mode and verify reviewer claims. |
+| `systematic-debugging` | Gather evidence, test one hypothesis, and fix verified root causes. |
 
 A small extension adds four workflow rules to Pi's system prompt. It does not inject complete skill bodies or register tools.
 
@@ -57,8 +58,8 @@ In the global package configuration:
    - `subagent-driven-development`
    - `requesting-code-review`
    - `test-driven-development`
-3. Keep independent utility skills if you use them:
    - `systematic-debugging`
+3. Keep independent utility skills if you use them:
    - `using-git-worktrees`
    - `verification-before-completion`
    - `finishing-a-development-branch`
@@ -85,6 +86,7 @@ Pi discovers skills automatically from their descriptions. You can force a workf
 /skill:planning-change-sets
 /skill:executing-plans-foreground
 /skill:reviewing-change-sets dual
+/skill:systematic-debugging
 ```
 
 ## Development

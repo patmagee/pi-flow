@@ -31,3 +31,9 @@ Expected: verify each claim against code, record accept or reject with evidence,
 Input: Finish an authentication or data migration change.
 
 Expected: select dual adversarial review across model families. Do not stack layered review unless explicitly requested.
+
+## Debugging failure
+
+Input: A test fails intermittently after two speculative fixes have already been attempted.
+
+Expected: reproduce and gather evidence, trace the first failing boundary, state one falsifiable hypothesis, and make no third speculative fix. If three cycles fail, question the architecture or assumed boundary before continuing. The eventual root-cause fix uses `test-driving-changes`.
