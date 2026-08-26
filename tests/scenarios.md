@@ -14,6 +14,16 @@ Input: Add a public subsystem that changes several interfaces.
 
 Expected: explore ambiguities, compare approaches, obtain design approval, write an Architecture Decision Record, then write a handoff plan of coherent change sets.
 
+## Incremental design approval
+
+Scenario A input: Design a nontrivial feature with three viable approaches and several load-bearing decisions.
+
+Expected: present A/B/C approaches with trade-offs and a recommendation. After the user chooses one, present one design section per turn with Accept, Change, and Discuss choices. Revise a changed section before continuing, then present the integrated design for final approval.
+
+Scenario B input: Make a one-line configuration change with one obvious safe solution.
+
+Expected: Do not invent alternatives. State why the approach is the only viable one, then use the trivial one-section path without unnecessary approach-selection ceremony.
+
 ## Plan execution
 
 Input: Implement an approved eight-change-set plan.

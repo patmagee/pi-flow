@@ -54,7 +54,7 @@ test("all workflow skills are discoverable and concise", async () => {
 
 test("skills contain the workflow decisions that prevent orchestration bloat", async () => {
   const required = {
-    "designing-changes": ["Spike", "Bounded", "Architectural", "approval"],
+    "designing-changes": ["Spike", "Bounded", "Architectural", "A)", "Accept", "Change", "Discuss", "one section per turn"],
     "planning-change-sets": ["Outcome", "Test-first contract", "Review gate", "30–90 minutes"],
     "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard"],
     "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md"],
@@ -89,6 +89,7 @@ test("distribution includes validation and representative scenarios", async () =
   for (const heading of [
     "## Small bug",
     "## Architectural feature",
+    "## Incremental design approval",
     "## Plan execution",
     "## Review findings",
     "## High-risk final review",
@@ -100,6 +101,11 @@ test("distribution includes validation and representative scenarios", async () =
   assert.match(scenarios, /re-review per the `reviewing-change-sets` policy/);
   const adr = await text("docs/decisions/2026-08-25-pi-flow.md");
   assert.match(adr, /Re-review follows the `reviewing-change-sets` policy/);
+  assert.match(adr, /approach selection from incremental design approval/);
+  assert.match(adr, /When only one approach is viable/);
+  assert.match(adr, /does not advance to the next section/);
+  assert.match(scenarios, /one obvious safe solution/);
+  assert.match(scenarios, /Do not invent alternatives/);
 
   const tdd = await text("skills/test-driving-changes/SKILL.md");
   assert.match(tdd, /bounded bug fix stays in the foreground/);

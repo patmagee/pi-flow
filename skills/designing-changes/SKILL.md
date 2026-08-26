@@ -29,16 +29,40 @@ Ask one question at a time. Focus on purpose, constraints, success criteria, com
 
 ## Present the design
 
-For Bounded work, describe the approach, affected components, data or control flow, error behavior, and testing in chat. Stop for explicit approval before implementation.
+Use two stages for nontrivial Bounded and Architectural work.
 
-For Architectural work:
+### Stage 1: Select an approach
 
-1. Present two or three viable approaches with trade-offs and a recommendation.
-2. Present the design in sections sized to the decision.
-3. Confirm each load-bearing decision with the user.
-4. Write the approved ADR under `docs/decisions/YYYY-MM-DD-<topic>.md`, unless the project has another convention.
-5. Ask the user to review the written ADR.
-6. After approval, use `planning-change-sets`.
+When multiple viable approaches exist:
+
+1. Present two or three choices as **A)**, **B)**, and optionally **C)**.
+2. State each choice's main benefit, cost, and risk.
+3. Recommend one choice and explain why.
+4. Ask the user to choose A, B, C, or request another option.
+
+Do not invent alternatives when only one approach is reasonable. State why it is the only viable approach, then continue.
+
+### Stage 2: Approve the design incrementally
+
+Expand the selected approach into two to five named sections. Cover the approach, affected components, data or control flow, error behavior, and testing as relevant.
+
+Present one section per turn. End each section with these choices:
+
+1. **Accept**
+2. **Change**
+3. **Discuss**
+
+Stop for the answer. If the user chooses Change, revise and present the same section again. If the user chooses Discuss, answer the concern and ask for a decision on that section before continuing.
+
+Keep accepted sections stable. If a later section conflicts with one, explicitly reopen the earlier decision. After all sections are accepted, present a short integrated design and request final approval.
+
+A truly focused Bounded change may use one section. Spikes and trivial one-section changes may skip unnecessary choices.
+
+For Architectural work, after final approval:
+
+1. Write the approved ADR under `docs/decisions/YYYY-MM-DD-<topic>.md`, unless the project has another convention.
+2. Ask the user to review the written ADR.
+3. After approval, use `planning-change-sets`.
 
 An ADR contains context, decision, alternatives, consequences, invariants, acceptance scenarios, and excluded work. Distinguish user decisions from agent-selected implementation details.
 
