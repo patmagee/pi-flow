@@ -62,9 +62,14 @@ export class PiRpcClient {
   #child;
   #counter = 0;
   #events = [];
+  #exitPromise;
+  #exitResult;
   #failure;
+  #killGraceMs;
+  #killTimer;
   #parser = new StrictJsonlParser();
   #pending = new Map();
+  #resolveExit;
   #stderr = "";
   #timeoutMs;
   #waiters = new Set();
@@ -75,12 +80,20 @@ export class PiRpcClient {
     cwd = process.cwd(),
     env = process.env,
     timeoutMs = 120_000,
+    killGraceMs = 1_000,
     spawn = spawnProcess,
   } = {}) {
     if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
       throw new TypeError("timeoutMs must be a positive number");
     }
+    if (!Number.isFinite(killGraceMs) || killGraceMs <= 0) {
+      throw new TypeError("killGraceMs must be a positive number");
+    }
     this.#timeoutMs = timeoutMs;
+    this.#killGraceMs = killGraceMs;
+    this.#exitPromise = new Promise((resolveExit) => {
+      this.#resolveExit = resolveExit;
+    });
     this.#child = spawn(command, args, {
       cwd,
       env,
@@ -104,12 +117,20 @@ export class PiRpcClient {
     this.#child.stderr.on("data", (chunk) => {
       this.#stderr = `${this.#stderr}${chunk}`.slice(-8_192);
     });
+    const settleExit = (code, signal) => {
+      if (this.#exitResult) return;
+      this.#exitResult = { code, signal };
+      clearTimeout(this.#killTimer);
+      this.#resolveExit(this.#exitResult);
+    };
     this.#child.on("error", (error) => this.#fail(new PiRpcError(`Could not start Pi RPC: ${error.message}`, { cause: error })));
     this.#child.on("exit", (code, signal) => {
+      settleExit(code, signal);
       if (this.closed) return;
       const detail = this.#stderr.trim() ? `: ${this.#stderr.trim()}` : "";
       this.#fail(new PiRpcError(`Pi RPC exited before completion (${signal ?? code})${detail}`));
     });
+    this.#child.on("close", settleExit);
   }
 
   get closed() {
@@ -147,6 +168,10 @@ export class PiRpcClient {
     return response.data;
   }
 
+  waitForExit() {
+    return this.#exitPromise;
+  }
+
   request(command) {
     if (this.closed) return Promise.reject(this.#failure ?? new PiRpcError("Pi RPC client is closed"));
     const id = command.id ?? `pi-flow-${++this.#counter}`;
@@ -164,7 +189,7 @@ export class PiRpcClient {
   }
 
   close() {
-    if (this.closed) return;
+    if (this.closed) return this.#exitPromise;
     const child = this.#child;
     this.#child = undefined;
     const error = this.#failure ?? new PiRpcError("Pi RPC client closed");
@@ -177,6 +202,13 @@ export class PiRpcClient {
     this.#waiters.clear();
     child.stdin.destroy();
     child.kill("SIGTERM");
+    if (child.exitCode === null && child.signalCode === null) {
+      this.#killTimer = setTimeout(() => {
+        if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+      }, this.#killGraceMs);
+      this.#killTimer.unref?.();
+    }
+    return this.#exitPromise;
   }
 
   #handle(value) {

@@ -104,28 +104,58 @@ export async function loadScenarios(directory, selectedIds = []) {
   return selectedIds.map((id) => byId.get(id));
 }
 
+function balancedJsonObjects(text) {
+  const objects = [];
+  let depth = 0;
+  let escaped = false;
+  let inString = false;
+  let start = -1;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') inString = true;
+    else if (character === "{") {
+      if (depth === 0) start = index;
+      depth += 1;
+    } else if (character === "}" && depth > 0) {
+      depth -= 1;
+      if (depth === 0) objects.push(text.slice(start, index + 1));
+    }
+  }
+  return objects;
+}
+
+function normalizeJudgeResult(result) {
+  if (!["PASS", "FAIL"].includes(result?.verdict)) throw new TypeError("verdict must be PASS or FAIL");
+  for (const field of ["evidence", "failures"]) {
+    if (!Array.isArray(result[field]) || result[field].some((item) => typeof item !== "string")) {
+      throw new TypeError(`${field} must be an array of strings`);
+    }
+  }
+  return { verdict: result.verdict, evidence: result.evidence, failures: result.failures };
+}
+
 export function extractJudgeResult(text) {
   if (typeof text !== "string") throw new TypeError("Invalid judge JSON: response was not text");
   let candidate = text.trim();
   const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
   if (fenced) candidate = fenced[1].trim();
-  const start = candidate.indexOf("{");
-  const end = candidate.lastIndexOf("}");
-  if (start === -1 || end < start) throw new TypeError("Invalid judge JSON: no object found");
 
-  let result;
-  try {
-    result = JSON.parse(candidate.slice(start, end + 1));
-  } catch (cause) {
-    throw new TypeError(`Invalid judge JSON: ${cause.message}`, { cause });
-  }
-  if (!["PASS", "FAIL"].includes(result?.verdict)) throw new TypeError("Invalid judge JSON: verdict must be PASS or FAIL");
-  for (const field of ["evidence", "failures"]) {
-    if (!Array.isArray(result[field]) || result[field].some((item) => typeof item !== "string")) {
-      throw new TypeError(`Invalid judge JSON: ${field} must be an array of strings`);
+  let lastError;
+  for (const attempt of [candidate, ...balancedJsonObjects(candidate)]) {
+    try {
+      return normalizeJudgeResult(JSON.parse(attempt));
+    } catch (error) {
+      lastError = error;
     }
   }
-  return { verdict: result.verdict, evidence: result.evidence, failures: result.failures };
+  throw new TypeError(`Invalid judge JSON: ${lastError?.message ?? "no object found"}`, { cause: lastError });
 }
 
 function judgePrompt(scenario, transcript) {
@@ -248,8 +278,7 @@ export async function main(argv = process.argv.slice(2)) {
         error: { name: error.name, message: error.message },
       };
     } finally {
-      candidate.close();
-      judge.close();
+      await Promise.all([candidate.close(), judge.close()]);
     }
     results.push(result);
     await writeRunReport(outputDirectory, metadata, results);

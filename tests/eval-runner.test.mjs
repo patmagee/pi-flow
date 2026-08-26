@@ -81,6 +81,20 @@ test("RPC client terminates a process when a turn times out", async (t) => {
   assert.equal(client.closed, true);
 });
 
+test("RPC client escalates to SIGKILL when a child ignores SIGTERM", async (t) => {
+  const client = new PiRpcClient({
+    command: process.execPath,
+    args: ["-e", "process.on('SIGTERM', () => {}); setInterval(() => {}, 1000); process.stdin.resume()"],
+    timeoutMs: 100,
+    killGraceMs: 20,
+  });
+  t.after(() => client.close());
+
+  await assert.rejects(client.prompt("never answered"), /timed out/i);
+  const exit = await client.waitForExit();
+  assert.equal(exit.signal, "SIGKILL");
+});
+
 test("scenario validation accepts the behavior contract", () => {
   const scenario = {
     id: "feedback-validation",
@@ -165,6 +179,7 @@ test("judge result accepts plain or fenced strict JSON", () => {
     failures: [],
   });
   assert.equal(extractJudgeResult('```json\n{"verdict":"FAIL","evidence":[],"failures":["gap"]}\n```').verdict, "FAIL");
+  assert.equal(extractJudgeResult('Checked {rubric}.\n{"verdict":"PASS","evidence":["ok"],"failures":[]}').verdict, "PASS");
   assert.throws(() => extractJudgeResult("PASS"), /judge JSON/);
 });
 
