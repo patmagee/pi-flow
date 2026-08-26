@@ -57,9 +57,9 @@ test("skills contain the workflow decisions that prevent orchestration bloat", a
     "designing-changes": ["Spike", "Bounded", "Architectural", "A)", "Accept", "Change", "Discuss", "one section per turn"],
     "planning-change-sets": ["Outcome", "Test-first contract", "Review gate", "30–90 minutes"],
     "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard"],
-    "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md"],
-    "reviewing-change-sets": ["single", "layered", "dual", "Accept", "Re-review"],
-    "systematic-debugging": ["Reproduce", "Evidence", "Hypothesis", "root cause", "three failed", "test-driving-changes", "An unverified code change is not a mitigation"],
+    "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md", "Never let implementation drift silently", "same commit"],
+    "reviewing-change-sets": ["single", "layered", "dual", "Accept", "Re-review", "testable claim", "needs evidence"],
+    "systematic-debugging": ["Reproduce", "Evidence", "Hypothesis", "root cause", "three failed", "test-driving-changes", "An unverified code change is not a mitigation", "systemic root cause", "`designing-changes`"],
   };
 
   for (const [name, terms] of Object.entries(required)) {
@@ -79,6 +79,9 @@ test("documentation explains installation and Superpowers coexistence", async ()
   assert.match(readme, /systematic-debugging/);
   assert.match(readme, /Claude Code/);
 
+  const review = frontmatter(await text("skills/reviewing-change-sets/SKILL.md"));
+  assert.match(review.description, /receiving review feedback/);
+
   const license = await text("LICENSE");
   assert.match(license, /MIT License/);
 });
@@ -91,9 +94,12 @@ test("distribution includes validation and representative scenarios", async () =
     "## Architectural feature",
     "## Incremental design approval",
     "## Plan execution",
+    "## Plan divergence",
     "## Review findings",
+    "## Feedback intake",
     "## High-risk final review",
     "## Debugging failure",
+    "## Systemic root cause",
   ]) {
     assert.ok(scenarios.includes(heading));
   }
@@ -104,6 +110,9 @@ test("distribution includes validation and representative scenarios", async () =
   assert.match(adr, /approach selection from incremental design approval/);
   assert.match(adr, /When only one approach is viable/);
   assert.match(adr, /does not advance to the next section/);
+  assert.match(adr, /Never let implementation drift silently/);
+  assert.match(adr, /systemic root cause/);
+  assert.match(adr, /receiving review feedback/);
   assert.match(scenarios, /one obvious safe solution/);
   assert.match(scenarios, /Do not invent alternatives/);
 

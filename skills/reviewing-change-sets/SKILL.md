@@ -1,6 +1,6 @@
 ---
 name: reviewing-change-sets
-description: Use when a coherent code change, design, plan, branch, or pull request needs independent review or a risk-based review checkpoint.
+description: Use when receiving review feedback or when a coherent code change, design, plan, branch, or pull request needs independent review or a risk-based review checkpoint.
 ---
 
 # Reviewing Change Sets
@@ -28,6 +28,10 @@ Identify the artifact, base and head, requirements or design, project convention
 Reviewers are read-only. They do not dispatch subagents, modify code, or rerun broad suites already evidenced. They may inspect focused surrounding code for a concrete risk.
 
 Every reviewer finding contains severity, confidence, location, problem, impact, evidence, and a concrete fix. Omit preferences with no observable cost.
+
+## Receive feedback
+
+Before implementation, restate each finding as a testable claim. Check its cited code, contract, test, or history. Mark it **Accept**, **Reject**, or **needs evidence**. Do not fix a rejected or unresolved claim.
 
 ## Verify claims
 

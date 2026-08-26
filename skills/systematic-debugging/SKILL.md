@@ -52,6 +52,10 @@ Add defense at additional boundaries only when independent entry paths can recre
 
 For asynchronous failures, wait for the observable condition with a timeout and diagnostic message. Use fixed sleeps only when time itself is the behavior under test.
 
+## Re-enter design for systemic causes
+
+When a confirmed systemic root cause requires a change to architecture, product behavior, or a public contract, stop treating it as a bounded fix. Invoke `designing-changes` and carry the evidence, constraints, mitigation, and unresolved questions into that design. A reversible production mitigation may remain active while the design is considered.
+
 ## Report
 
 State the root cause, evidence, fix, regression test, verification, confidence, and remaining uncertainty. If the root cause is external or environmental, document what was excluded and add proportional handling or observability.

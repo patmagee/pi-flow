@@ -16,6 +16,12 @@ The current Pi agent owns implementation. Subagents reduce context only when the
 3. Create or resume `.pi/work/<branch>/progress.md` and `decisions.md`.
 4. Record the current change set, repository state, and exact verification commands.
 
+## Plan fidelity
+
+Never let implementation drift silently from the approved plan. If a departure conflicts with the approved design, stop for the user. For a reversible implementation correction, record the reason, affected change sets, and changed verification.
+
+When the plan is committed, update it in the same commit as the departure. When the plan is session-local, update `.pi/work/<branch>/progress.md` and `decisions.md` before the next checkpoint. Verify the final tree against the revised plan.
+
 ## Execute each change set
 
 1. Mark the change set active in `progress.md`.
