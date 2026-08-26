@@ -1,0 +1,20 @@
+{
+  "id": "plan-divergence",
+  "name": "Plan departures update the authoritative artifact",
+  "skill": "executing-plans-foreground",
+  "turns": [
+    {
+      "user": "During implementation, a reversible library choice in the approved plan cannot satisfy an existing interface. Explain the next action for both a committed plan and a session-local plan.",
+      "assertions": [
+        { "type": "includesAll", "values": ["same commit", "progress.md", "decisions.md"] },
+        { "type": "includesAny", "values": ["reason", "rationale"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant does not allow silent plan drift.",
+    "It updates a committed plan in the same commit as the departure.",
+    "It updates progress.md and decisions.md for a session-local plan.",
+    "It stops for the user only when the departure conflicts with the approved design."
+  ]
+}

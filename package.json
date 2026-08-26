@@ -15,7 +15,8 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "validate": "node scripts/validate-skills.mjs",
-    "check": "npm test && npm run validate"
+    "check": "npm test && npm run validate",
+    "eval": "node scripts/eval-workflows.mjs"
   },
   "pi": {
     "extensions": [
@@ -29,6 +30,7 @@
     "extensions",
     "skills",
     "scripts",
+    "evals",
     "docs",
     "tests/scenarios.md",
     "tests/*.test.mjs",

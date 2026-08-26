@@ -1,0 +1,19 @@
+{
+  "id": "high-risk-review",
+  "name": "High-risk work selects dual review",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "An authentication migration is ready for final review. Select the review mode and explain why.",
+      "assertions": [
+        { "type": "includesAll", "values": ["dual", "authentication"] },
+        { "type": "includesAny", "values": ["different model", "model families"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant selects dual adversarial review because authentication and migration are high risk.",
+    "It does not automatically stack layered review on top of dual review.",
+    "Human review remains required before merge."
+  ]
+}

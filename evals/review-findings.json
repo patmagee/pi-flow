@@ -1,0 +1,19 @@
+{
+  "id": "review-findings",
+  "name": "Reviewer findings remain claims",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "A reviewer returned three plausible findings. Explain what happens before any code changes.",
+      "assertions": [
+        { "type": "includesAll", "values": ["Accept", "Reject", "evidence"] },
+        { "type": "includesAny", "values": ["needs evidence", "unresolved"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant validates each finding against code, tests, contracts, or history.",
+    "It records Accept, Reject, or needs evidence before implementation.",
+    "It fixes only accepted findings and does so in the foreground."
+  ]
+}

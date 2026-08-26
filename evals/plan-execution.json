@@ -1,0 +1,19 @@
+{
+  "id": "plan-execution",
+  "name": "Approved plans execute in the foreground",
+  "skill": "executing-plans-foreground",
+  "turns": [
+    {
+      "user": "An approved eight-change-set plan is ready. Explain how you will execute it and preserve resumable state.",
+      "assertions": [
+        { "type": "includesAll", "values": ["foreground", "progress.md", "decisions.md"] },
+        { "type": "includesAny", "values": ["test-driving-changes", "RED"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The current Pi agent owns implementation and integration.",
+    "Subagents are limited to bounded exploration, review, or explicit isolated work.",
+    "The assistant records resumable state and checkpoint evidence."
+  ]
+}

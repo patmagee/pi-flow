@@ -1,0 +1,19 @@
+{
+  "id": "systemic-root-cause",
+  "name": "Systemic root causes re-enter design",
+  "skill": "systematic-debugging",
+  "turns": [
+    {
+      "user": "Investigation confirms that a defect can only be resolved by changing a public consistency contract shared by several services. A reversible mitigation is active. State the next workflow step.",
+      "assertions": [
+        { "type": "includesAll", "values": ["designing-changes", "evidence", "mitigation"] },
+        { "type": "includesAny", "values": ["public contract", "systemic"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant stops treating the work as a bounded bug fix.",
+    "It invokes designing-changes and carries evidence, constraints, mitigation, and open questions into design.",
+    "It permits the reversible mitigation to remain active while the design is considered."
+  ]
+}

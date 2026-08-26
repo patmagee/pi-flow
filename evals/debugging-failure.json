@@ -1,0 +1,19 @@
+{
+  "id": "debugging-failure",
+  "name": "Flaky failure is investigated before another fix",
+  "skill": "systematic-debugging",
+  "turns": [
+    {
+      "user": "A test fails intermittently after two speculative fixes. Production impact is active. State the next actions before another code change.",
+      "assertions": [
+        { "type": "includesAll", "values": ["Evidence", "Hypothesis", "Reproduce"] },
+        { "type": "includesAny", "values": ["three", "third"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant refuses another speculative code fix and gathers reproducible evidence.",
+    "It permits only a reversible operational mitigation while investigation continues.",
+    "It tests one falsifiable hypothesis at a time."
+  ]
+}

@@ -35,7 +35,9 @@ test("package exposes one extension and the skills directory", async () => {
   assert.ok(pkg.keywords.includes("pi-package"));
   assert.deepEqual(pkg.pi.extensions, ["./extensions/pi-flow.js"]);
   assert.deepEqual(pkg.pi.skills, ["./skills"]);
+  assert.equal(pkg.scripts.eval, "node scripts/eval-workflows.mjs");
   assert.ok(pkg.files.includes("scripts"));
+  assert.ok(pkg.files.includes("evals"));
   assert.ok(pkg.files.includes("tests/scenarios.md"));
   assert.ok(pkg.files.includes("tests/*.test.mjs"));
   assert.ok(pkg.files.includes("docs"));
@@ -88,6 +90,7 @@ test("documentation explains installation and Superpowers coexistence", async ()
 
 test("distribution includes validation and representative scenarios", async () => {
   await text("scripts/validate-skills.mjs");
+  await text("scripts/eval-workflows.mjs");
   const scenarios = await text("tests/scenarios.md");
   for (const heading of [
     "## Small bug",

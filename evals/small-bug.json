@@ -1,0 +1,19 @@
+{
+  "id": "small-bug",
+  "name": "Small bug stays foreground and test-first",
+  "skill": "test-driving-changes",
+  "turns": [
+    {
+      "user": "A one-file parser bug has an existing test suite. Explain the execution flow you will use before making changes.",
+      "assertions": [
+        { "type": "includesAll", "values": ["RED", "GREEN", "foreground"] },
+        { "type": "includesAny", "values": ["focused test", "smallest relevant"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant keeps implementation in the foreground.",
+    "The assistant requires a focused failing test before production code.",
+    "The assistant does not propose a subagent-per-task workflow."
+  ]
+}

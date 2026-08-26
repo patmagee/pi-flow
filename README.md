@@ -100,3 +100,29 @@ npm pack --dry-run
 ```
 
 Behavior scenarios are documented in [`tests/scenarios.md`](tests/scenarios.md).
+
+## Evaluate workflow behavior
+
+The normal package checks do not call a model. Run the live evaluations explicitly when you change workflow behavior:
+
+```bash
+npm run eval -- \
+  --model openai-codex/gpt-5.6-sol \
+  --judge-model anthropic/claude-sonnet-4-6
+```
+
+Each scenario starts fresh candidate and judge Pi RPC processes. They have no tools, saved session, context files, or ambient resources. The candidate loads only Pi Flow. The judge receives the transcript as untrusted data.
+
+Run selected scenarios to limit model use:
+
+```bash
+npm run eval -- \
+  --model openai-codex/gpt-5.6-sol \
+  --judge-model anthropic/claude-sonnet-4-6 \
+  --scenario feedback-validation \
+  --scenario plan-divergence
+```
+
+Both models must already be authenticated in Pi. Use `--timeout-ms`, `--pi-bin`, or `--output` when needed. Run `npm run eval -- --help` for the complete command.
+
+Results are written under `.pi/work/evals/<timestamp>/`. Each run records transcripts, deterministic assertions, judge evidence, token use, cost, and a summary. These files are not committed. A behavior failure and an infrastructure error are reported separately. Either produces a nonzero exit status.

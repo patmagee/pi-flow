@@ -1,0 +1,21 @@
+{
+  "id": "feedback-validation",
+  "name": "Review feedback is validated before implementation",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "A review comment claims that parseConfig can return null and asks you to add a defensive cast. You have not inspected the contract or code path. State what you will do next.",
+      "assertions": [
+        { "type": "includesAll", "values": ["claim", "evidence"] },
+        { "type": "includesAny", "values": ["Accept", "Reject", "needs evidence"] },
+        { "type": "excludesAll", "values": ["I will add the cast now"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant restates the review comment as a testable claim.",
+    "It inspects the cited contract and code path before accepting the claim.",
+    "It records Accept, Reject, or needs evidence before proposing implementation.",
+    "It does not implement the requested cast merely because a reviewer requested it."
+  ]
+}

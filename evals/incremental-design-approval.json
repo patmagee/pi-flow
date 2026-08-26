@@ -1,0 +1,35 @@
+{
+  "id": "incremental-design-approval",
+  "name": "Design sections are approved one at a time",
+  "skill": "designing-changes",
+  "turns": [
+    {
+      "user": "Design a new job scheduler with three viable approaches and several load-bearing decisions. Start with approach selection only.",
+      "assertions": [
+        { "type": "includesAll", "values": ["A)", "B)", "C)"] }
+      ]
+    },
+    {
+      "user": "B",
+      "assertions": [
+        { "type": "includesAll", "values": ["Accept", "Change", "Discuss"] }
+      ]
+    },
+    {
+      "user": "Change: make the first section support cancellation without data loss.",
+      "assertions": [
+        { "type": "includesAll", "values": ["Accept", "Change", "Discuss", "cancellation"] }
+      ]
+    },
+    {
+      "user": "Accept",
+      "assertions": []
+    }
+  ],
+  "rubric": [
+    "The assistant waits for approach selection before detailed design.",
+    "It presents only one named design section after B is selected.",
+    "It revises the same section after the Change response instead of advancing.",
+    "It advances only after the revised section is accepted."
+  ]
+}

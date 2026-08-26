@@ -1,0 +1,19 @@
+{
+  "id": "architectural-feature",
+  "name": "Architectural feature selects an approach before design",
+  "skill": "designing-changes",
+  "turns": [
+    {
+      "user": "Design a public cache subsystem. There are three viable storage approaches. Present the approach decision, but do not implement anything.",
+      "assertions": [
+        { "type": "includesAll", "values": ["A)", "B)", "C)"] },
+        { "type": "includesAny", "values": ["recommend", "recommendation"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant compares viable approaches with trade-offs and recommends one.",
+    "The assistant asks the user to select an approach before detailed design.",
+    "The assistant does not begin implementation."
+  ]
+}
