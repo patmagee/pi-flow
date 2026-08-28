@@ -1,0 +1,21 @@
+{
+  "id": "independent-oracle",
+  "name": "Semantic reviewers get the contract without the prior verdict",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "You are preparing two semantic reviewers for a high-risk change. The previous reviewer already approved the current detector. State exactly what you give each reviewer and what you must not include.",
+      "assertions": [
+        { "type": "includesAll", "values": ["contract", "evidence"] },
+        { "type": "includesAny", "values": ["previous reviewer", "prior verdict", "previous verdict", "prior reviewer"] },
+        { "type": "includesAny", "values": ["independent", "oracle"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant gives each reviewer the approved requirements or behavior contract plus raw evidence and relevant paths.",
+    "It does not state the previous reviewer verdict and does not describe the current detector or fix as correct.",
+    "It defines independence by the review oracle, the contract, not by the model family alone.",
+    "It notes that more reviewer seats do not help when every seat inherits the same verdict."
+  ]
+}

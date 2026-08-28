@@ -17,10 +17,10 @@ Pi Flow includes six skills:
 | `planning-change-sets` | Write a concise plan for another model or engineer. |
 | `test-driving-changes` | Apply red-green-refactor with risk-scaled validation. |
 | `executing-plans-foreground` | Execute plans in the main Pi session and preserve resumable state. |
-| `reviewing-change-sets` | Select one risk-based review mode and verify reviewer claims. |
+| `reviewing-change-sets` | Orchestrate review: select one risk-based mode, keep reviewer oracles independent, and verify reviewer claims. |
 | `systematic-debugging` | Gather evidence, test one hypothesis, and fix verified root causes. |
 
-A small extension adds four workflow rules to Pi's system prompt. It does not inject complete skill bodies or register tools.
+A small extension adds a short workflow policy to Pi's system prompt. It does not inject complete skill bodies or register tools.
 
 ## Install
 
@@ -64,9 +64,24 @@ In the global package configuration:
    - `verification-before-completion`
    - `finishing-a-development-branch`
    - `writing-skills`
-4. Make existing `two-pass-review` and `dual-adversarial-review` skills manual-only, or use the equivalent `layered` and `dual` modes in `reviewing-change-sets`.
+4. Make existing `two-pass-review` and `dual-adversarial-review` skills manual-only, or use the equivalent modes in `reviewing-change-sets`.
 
 This changes Pi resource selection only. Claude Code can continue to use the normal Superpowers plugin.
+
+## Review orchestration
+
+While Pi Flow is active, `reviewing-change-sets` is the review orchestrator. Do not run another review-orchestration skill at the same checkpoint. It selects one of four modes per checkpoint:
+
+| Mode | Seats | Use when |
+|---|---|---|
+| `single` | One independent semantic reviewer. | Normal checkpoint or final review. |
+| `layered` | One semantic and one mechanical reviewer. | Mixed code and generated/config changes, or a prior review missed mechanical defects. |
+| `dual` | Two semantic reviewers from different model families. | Authentication, permissions, migration, concurrency, billing, public contracts, data-loss risk, or an explicit adversarial request. |
+| `stacked` | Two semantic reviewers from different model families and one mechanical reviewer. | The user explicitly requests all three seats and accepts the cost. |
+
+`stacked` is never selected automatically. High risk selects `dual`. Reviewers stay independent by the oracle: they receive the approved contract and raw evidence, never the prior reviewer verdict. If two accepted post-fix findings share one semantic seam, the loop stops and work returns to `designing-changes` to approve a source-to-output contract before another patch.
+
+The external `two-pass-review` skill is explicit-only. Its `layered` and `stacked` modes map onto the same seats. Pi Flow users normally invoke `reviewing-change-sets layered` or `reviewing-change-sets stacked` instead.
 
 ## Delegation defaults
 

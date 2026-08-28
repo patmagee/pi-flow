@@ -1,0 +1,21 @@
+{
+  "id": "repeated-defect-stop-rule",
+  "name": "Repeated defects from one seam reset to design",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "Two accepted post-fix findings came from the same semantic seam in one source-to-output transform. A teammate suggests adding a third reviewer. State the next workflow step.",
+      "assertions": [
+        { "type": "includesAll", "values": ["designing-changes", "invariant"] },
+        { "type": "includesAny", "values": ["freeze", "stop"] },
+        { "type": "includesAny", "values": ["composition", "pairwise", "dimensions"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant freezes production edits and stops the patch and re-review loop.",
+    "It returns to designing-changes to write the source-to-output invariant and enumerate the relevant dimensions and pairwise compositions.",
+    "It approves the contract before another implementation attempt.",
+    "A third reviewer is not the default response, because more seats over the same oracle repeat the same blind spot."
+  ]
+}

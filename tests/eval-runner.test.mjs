@@ -164,7 +164,7 @@ test("Pi arguments isolate candidate and judge resources", () => {
 test("scenario catalog is valid and supports filtering", async () => {
   const directory = new URL("../evals/", import.meta.url);
   const all = await loadScenarios(directory, []);
-  assert.ok(all.length >= 10);
+  assert.ok(all.length >= 15);
   assert.equal(new Set(all.map((scenario) => scenario.id)).size, all.length);
 
   const selected = await loadScenarios(directory, ["feedback-validation"]);

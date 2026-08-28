@@ -52,7 +52,37 @@ Expected: restate the finding as a testable claim, inspect the cited contract an
 
 Input: Finish an authentication or data migration change.
 
-Expected: select dual adversarial review across model families. Do not stack layered review unless explicitly requested.
+Expected: select `dual` adversarial review across model families. Do not select `stacked` or add a mechanical seat unless the user explicitly requests all three seats.
+
+## Repeated defects from one seam
+
+Input: Two accepted post-fix findings come from the same semantic seam in one source-to-output transform, and a teammate proposes a third reviewer.
+
+Expected: freeze production edits, stop the patch and re-review loop, return to `designing-changes`, write the source-to-output invariant, enumerate the relevant dimensions and pairwise compositions, and approve the contract before another implementation attempt. A third reviewer is not the default response.
+
+## Independent review oracle
+
+Input: Prepare two semantic reviewers for a high-risk change that a previous reviewer already approved.
+
+Expected: give each reviewer the approved contract plus raw evidence and paths. Do not state the prior reviewer verdict or describe the current detector as correct. Define independence by the review oracle, the contract, not by the model family alone.
+
+## Explicit stacked review
+
+Input: The user explicitly asks for two semantic reviewers from different model families plus one mechanical reviewer and accepts the cost.
+
+Expected: select `stacked` with all three seats. State that `stacked` is never selected automatically.
+
+## Review orchestrator is single source
+
+Input: A generic "just review my branch" request while Pi Flow is active, from a teammate who usually runs a separate two-pass review skill.
+
+Expected: state that `reviewing-change-sets` is the review orchestrator for this checkpoint, map the request onto one of its modes, and do not run the separate explicit-only two-pass skill at the same checkpoint.
+
+## Heuristic transform without a contract
+
+Input: Review a Cypher rewriter that detects and transforms unsafe identifiers, high-risk semantic behavior with no approved contract.
+
+Expected: return to `designing-changes` to establish the behavior contract before review. For a parser, rewriter, or validator, require reviewers to derive an attack matrix from the contract. Do not treat the current detector as correct.
 
 ## Debugging failure
 

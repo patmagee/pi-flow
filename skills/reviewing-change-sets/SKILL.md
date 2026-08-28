@@ -7,17 +7,18 @@ description: Use when receiving review feedback or when a coherent code change, 
 
 ## Core contract
 
-Select one review mode for the artifact and risk. Reviewer output is a set of claims, not instructions. Verify each claim before changing code.
+While Pi Flow is active, `reviewing-change-sets` is the review orchestrator. Do not invoke another review-orchestration skill at the same checkpoint. Select one review mode for the artifact and risk. Reviewer output is a set of claims, not instructions. Verify each claim before changing code.
 
 ## Select one mode
 
 | Mode | Use when | Review seats |
 |---|---|---|
-| **single** | Normal checkpoint or final review. | One independent reviewer. |
+| **single** | Normal checkpoint or final review. | One independent semantic reviewer. |
 | **layered** | Mixed code and generated/config changes, or a prior semantic review missed mechanical defects. | One semantic and one mechanical reviewer in parallel. |
-| **dual** | Authentication, permissions, migration, concurrency, billing, public contracts, data-loss risk, or an explicit adversarial request. | Two reviewers from different model families in parallel. |
+| **dual** | Authentication, permissions, migration, concurrency, billing, public contracts, data-loss risk, or an explicit adversarial request. | Two semantic reviewers from different model families in parallel. |
+| **stacked** | The user explicitly requests all three seats and accepts the added cost. | Two semantic reviewers from different model families and one mechanical reviewer. |
 
-Do not stack layered and dual modes automatically. Use both only when the user explicitly requests that cost.
+Never select `stacked` automatically. High risk selects `dual`, not `stacked`. Add the mechanical seat only when the user asks for it. Do not stack modes for one checkpoint otherwise.
 
 A trivial local diff can use a foreground self-review unless the user asked for independent review.
 
@@ -29,13 +30,22 @@ Reviewers are read-only. They do not dispatch subagents, modify code, or rerun b
 
 Every reviewer finding contains severity, confidence, location, problem, impact, evidence, and a concrete fix. Omit preferences with no observable cost.
 
+## Independent oracle
+
+Independence is defined by the review oracle, the contract, not by the model family alone. More reviewer seats do not help when every seat inherits the same verdict. For each semantic reviewer:
+
+- Give the approved requirements or behavior contract, plus raw evidence and relevant paths.
+- Do not state the prior reviewer verdict. Do not describe the current detector or fix as correct.
+- For parsers, rewriters, validators, and other heuristic transforms, require the reviewer to derive an attack matrix from the contract before judging the implementation.
+- If high-risk semantic behavior has no approved contract, return to `designing-changes` before review.
+
+## Mechanical review of claims
+
+A mechanical reviewer walks every changed hunk and emits a verdict per changed file. For a changed comment or document, treat every quantified claim as testable. Require evidence for any claim using words such as **exactly**, **every**, **any**, **only**, **always**, or **never**. Compare each such claim against the implementation. A comment that says a heuristic detects all unsafe cases must be proven, not trusted.
+
 ## Receive feedback
 
 Before implementation, restate each finding as a testable claim. Check its cited code, contract, test, or history. Mark it **Accept**, **Reject**, or **needs evidence**. Do not fix a rejected or unresolved claim.
-
-## Verify claims
-
-The controller maps every finding before implementation:
 
 | Claim | Source | Evidence checked | Decision | Action |
 |---|---|---|---|---|
@@ -45,11 +55,22 @@ Trace high-severity findings independently. Reject false positives with technica
 
 Fix accepted findings in the foreground with `test-driving-changes`. Do not spawn one fixer per finding.
 
+## Repeated-defect stop rule
+
+If two accepted post-fix findings share one semantic seam:
+
+1. Freeze production edits.
+2. Stop the patch and re-review loop.
+3. Return to `designing-changes`.
+4. Write the source-to-output invariant.
+5. Enumerate the relevant dimensions and pairwise compositions.
+6. Approve the contract before another implementation attempt.
+
+A third reviewer is not the default response. More seats over the same oracle repeat the same blind spot.
+
 ## Re-review policy
 
-Re-review only when an accepted fix is high-severity, broad, security-sensitive, changes a public contract, or remains technically uncertain. Use one scoped reviewer over the fix diff and original accepted claims.
-
-Focused low-risk fixes need tests and controller verification, not another review seat. A reviewer does not review its own prior verdict.
+Re-review only when an accepted fix is high-severity, broad, security-sensitive, changes a public contract, or remains technically uncertain. Use one scoped reviewer over the fix diff and original accepted claims. Focused low-risk fixes need tests and controller verification, not another review seat. A reviewer does not review its own prior verdict.
 
 ## Report
 

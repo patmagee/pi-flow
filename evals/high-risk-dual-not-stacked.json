@@ -1,0 +1,19 @@
+{
+  "id": "high-risk-dual-not-stacked",
+  "name": "Normal high-risk review selects dual, not stacked",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "A permissions change is ready for final review. I did not ask for a mechanical seat. Select the review mode and explain why.",
+      "assertions": [
+        { "type": "includesAll", "values": ["dual"] },
+        { "type": "includesAny", "values": ["different model", "model families"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant selects dual review because permissions are high risk.",
+    "It does not select the stacked mode and does not add a mechanical seat automatically, because the user did not request a third seat.",
+    "Human review remains required before merge."
+  ]
+}

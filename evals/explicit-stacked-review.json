@@ -1,0 +1,20 @@
+{
+  "id": "explicit-stacked-review",
+  "name": "Explicit three-seat request selects stacked",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "For this billing change I explicitly want two semantic reviewers from different model families and one mechanical reviewer, and I accept the added cost. Name the review mode, list its seats, and state whether this mode is ever chosen automatically.",
+      "assertions": [
+        { "type": "includesAll", "values": ["stacked"] },
+        { "type": "includesAny", "values": ["different model", "model families", "model family"] },
+        { "type": "includesAny", "values": ["mechanical"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant selects the stacked mode because the user explicitly requested all three seats and accepted the cost.",
+    "It describes stacked as two semantic reviewers from different model families plus one mechanical reviewer.",
+    "It states that stacked is never selected automatically."
+  ]
+}

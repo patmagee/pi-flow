@@ -60,7 +60,13 @@ test("skills contain the workflow decisions that prevent orchestration bloat", a
     "planning-change-sets": ["Outcome", "Test-first contract", "Review gate", "30–90 minutes"],
     "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard"],
     "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md", "Never let implementation drift silently", "same commit"],
-    "reviewing-change-sets": ["single", "layered", "dual", "Accept", "Re-review", "testable claim", "needs evidence"],
+    "reviewing-change-sets": [
+      "single", "layered", "dual", "stacked",
+      "Accept", "Re-review", "testable claim", "needs evidence",
+      "orchestrator", "oracle", "prior reviewer verdict", "attack matrix",
+      "semantic seam", "designing-changes",
+      "exactly", "every", "any", "only", "always", "never",
+    ],
     "systematic-debugging": ["Reproduce", "Evidence", "Hypothesis", "root cause", "three failed", "test-driving-changes", "An unverified code change is not a mitigation", "systemic root cause", "`designing-changes`"],
   };
 
@@ -70,6 +76,52 @@ test("skills contain the workflow decisions that prevent orchestration bloat", a
       assert.ok(markdown.includes(term), `${name} must contain ${JSON.stringify(term)}`);
     }
   }
+});
+
+test("reviewing-change-sets defines four modes, oracle independence, and the stop rule", async () => {
+  const review = await text("skills/reviewing-change-sets/SKILL.md");
+
+  for (const mode of ["single", "layered", "dual", "stacked"]) {
+    assert.ok(review.includes(`**${mode}**`), `review skill must document the ${mode} mode`);
+  }
+
+  // stacked is the three-seat mode and is never automatic.
+  assert.match(review, /two semantic[\s\S]*mechanical/i);
+  assert.match(review, /[Nn]ever select .*stacked.* automatically|stacked.* never automatic|[Nn]ever.*automatically.*stacked/);
+  assert.match(review, /explicit/i);
+
+  // reviewing-change-sets is the single review orchestrator while Pi Flow is active.
+  assert.match(review, /orchestrator/);
+  assert.match(review, /Do not invoke another review-orchestration skill/);
+
+  // Oracle independence.
+  assert.match(review, /oracle/);
+  assert.match(review, /behavior contract/);
+  assert.match(review, /prior reviewer verdict/);
+  assert.match(review, /attack matrix/);
+  assert.match(review, /parser|rewriter|validator/);
+
+  // Repeated-defect stop rule.
+  assert.match(review, /semantic seam/);
+  assert.match(review, /two accepted post-fix findings/i);
+  assert.match(review, /`designing-changes`/);
+  assert.match(review, /source-to-output invariant/);
+  assert.match(review, /pairwise/);
+  assert.match(review, /A third reviewer is not the default/);
+
+  // Strengthened mechanical review of quantified claims.
+  for (const word of ["exactly", "every", "any", "only", "always", "never"]) {
+    assert.ok(review.includes(word), `review skill must list the quantifier word ${JSON.stringify(word)}`);
+  }
+});
+
+test("extension states the review orchestrator and stop rule briefly", async () => {
+  const extension = await text("extensions/pi-flow.js");
+  assert.match(extension, /reviewing-change-sets/);
+  assert.match(extension, /orchestrat/i);
+  assert.match(extension, /stacked/);
+  assert.match(extension, /oracle|contract/);
+  assert.match(extension, /semantic seam|two .*findings|repeated/i);
 });
 
 test("documentation explains installation and Superpowers coexistence", async () => {
@@ -83,6 +135,13 @@ test("documentation explains installation and Superpowers coexistence", async ()
 
   const review = frontmatter(await text("skills/reviewing-change-sets/SKILL.md"));
   assert.match(review.description, /receiving review feedback/);
+
+  // README documents the four modes and the review orchestrator policy.
+  for (const mode of ["single", "layered", "dual", "stacked"]) {
+    assert.ok(readme.includes(mode), `README must document the ${mode} mode`);
+  }
+  assert.match(readme, /review orchestrator/);
+  assert.match(readme, /two-pass-review/);
 
   const license = await text("LICENSE");
   assert.match(license, /MIT License/);
@@ -103,11 +162,18 @@ test("distribution includes validation and representative scenarios", async () =
     "## High-risk final review",
     "## Debugging failure",
     "## Systemic root cause",
+    "## Repeated defects from one seam",
+    "## Independent review oracle",
+    "## Explicit stacked review",
+    "## Review orchestrator is single source",
+    "## Heuristic transform without a contract",
   ]) {
-    assert.ok(scenarios.includes(heading));
+    assert.ok(scenarios.includes(heading), `scenarios.md must document ${heading}`);
   }
 
   assert.match(scenarios, /re-review per the `reviewing-change-sets` policy/);
+  assert.match(scenarios, /semantic seam/);
+  assert.match(scenarios, /stacked/);
   const adr = await text("docs/decisions/2026-08-25-pi-flow.md");
   assert.match(adr, /Re-review follows the `reviewing-change-sets` policy/);
   assert.match(adr, /approach selection from incremental design approval/);
@@ -116,6 +182,10 @@ test("distribution includes validation and representative scenarios", async () =
   assert.match(adr, /Never let implementation drift silently/);
   assert.match(adr, /systemic root cause/);
   assert.match(adr, /receiving review feedback/);
+  assert.match(adr, /review orchestrator/);
+  assert.match(adr, /stacked/);
+  assert.match(adr, /oracle/);
+  assert.match(adr, /semantic seam/);
   assert.match(scenarios, /one obvious safe solution/);
   assert.match(scenarios, /Do not invent alternatives/);
 

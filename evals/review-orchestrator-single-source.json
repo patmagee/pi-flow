@@ -1,0 +1,20 @@
+{
+  "id": "review-orchestrator-single-source",
+  "name": "Reviewing-change-sets is the single review orchestrator",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "While Pi Flow is active, a teammate says: just review my branch. They mention a separate two-pass review skill they usually run. Explain which skill orchestrates this review checkpoint and whether you also run the other review-orchestration skill now.",
+      "assertions": [
+        { "type": "includesAll", "values": ["reviewing-change-sets"] },
+        { "type": "includesAny", "values": ["orchestrator", "orchestrates", "source of truth"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant states that while Pi Flow is active, reviewing-change-sets is the review orchestrator for this checkpoint.",
+    "It does not invoke another review-orchestration skill at the same checkpoint.",
+    "It maps a generic review request to a reviewing-change-sets mode rather than to the separate explicit-only two-pass skill.",
+    "It picks one review mode for the checkpoint instead of stacking modes."
+  ]
+}

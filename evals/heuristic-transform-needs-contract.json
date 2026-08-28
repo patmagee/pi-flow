@@ -1,0 +1,20 @@
+{
+  "id": "heuristic-transform-needs-contract",
+  "name": "Heuristic transform review without a contract returns to design",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "You must review a Cypher rewriter that detects and transforms unsafe identifiers. It is high-risk semantic behavior. There is no approved behavior contract for what counts as unsafe. State what you do before judging the implementation.",
+      "assertions": [
+        { "type": "includesAll", "values": ["designing-changes", "contract"] },
+        { "type": "includesAny", "values": ["attack matrix", "attack surface", "composition"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant refuses to certify the heuristic transform because high-risk semantic behavior has no approved contract.",
+    "It returns to designing-changes to establish the behavior contract before review.",
+    "For a parser, rewriter, or validator it requires reviewers to derive an attack matrix from the contract before judging the implementation.",
+    "It does not treat the current detector or fix as correct while priming reviewers."
+  ]
+}
