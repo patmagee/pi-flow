@@ -20,7 +20,7 @@ Pi Flow includes six skills:
 | `reviewing-change-sets` | Orchestrate review: select one risk-based mode, keep reviewer oracles independent, and verify reviewer claims. |
 | `systematic-debugging` | Gather evidence, test one hypothesis, and fix verified root causes. |
 
-A small extension adds a short workflow policy to Pi's system prompt. It does not inject complete skill bodies or register tools.
+A small extension adds a short workflow policy to root Pi sessions. It skips isolated `pi-sub` child subagents, does not inject complete skill bodies, and does not register tools.
 
 ## Install
 
@@ -79,7 +79,9 @@ While Pi Flow is active, `reviewing-change-sets` is the review orchestrator. Do 
 | `dual` | Two semantic reviewers from different model families. | Authentication, permissions, migration, concurrency, billing, public contracts, data-loss risk, or an explicit adversarial request. |
 | `stacked` | Two semantic reviewers from different model families and one mechanical reviewer. | The user explicitly requests all three seats and accepts the cost. |
 
-`stacked` is never selected automatically. High risk selects `dual`. Reviewers stay independent by the oracle: they receive the approved contract and raw evidence, never the prior reviewer verdict. If two accepted post-fix findings share one semantic seam, the loop stops and work returns to `designing-changes` to approve a source-to-output contract before another patch.
+`stacked` is never selected automatically. High risk selects `dual`. Reviewers stay independent by the oracle: they receive the raw user requirements or approved ADR alongside the behavior contract and raw evidence, never the prior reviewer verdict. If two accepted post-fix findings share one semantic seam, the loop stops and work returns to `designing-changes` to approve a source-to-output contract before another patch.
+
+Review models are not hardcoded. The orchestrator inspects the live catalog of available models exposed by `subagent_start` and chooses freely across all enabled providers and model families, passing exact `provider/model` identifiers and recording each seat's actual model, effort, and role. Review reports default to blocking, high, and medium defects with observable cost and omit style nits unless requested.
 
 The external `two-pass-review` skill is explicit-only. Its `layered` and `stacked` modes map onto the same seats. Pi Flow users normally invoke `reviewing-change-sets layered` or `reviewing-change-sets stacked` instead.
 
@@ -122,8 +124,8 @@ The normal package checks do not call a model. Run the live evaluations explicit
 
 ```bash
 npm run eval -- \
-  --model openai-codex/gpt-5.6-sol \
-  --judge-model anthropic/claude-sonnet-4-6
+  --model <provider/model> \
+  --judge-model <provider/model>
 ```
 
 Each scenario starts fresh candidate and judge Pi RPC processes. They have no tools, saved session, context files, or ambient resources. The candidate loads only Pi Flow. The judge receives the transcript as untrusted data.
@@ -132,8 +134,8 @@ Run selected scenarios to limit model use:
 
 ```bash
 npm run eval -- \
-  --model openai-codex/gpt-5.6-sol \
-  --judge-model anthropic/claude-sonnet-4-6 \
+  --model <provider/model> \
+  --judge-model <provider/model> \
   --scenario feedback-validation \
   --scenario plan-divergence
 ```

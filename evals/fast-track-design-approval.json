@@ -1,0 +1,30 @@
+{
+  "id": "fast-track-design-approval",
+  "name": "Explicit fast-track approval proceeds without further section pauses",
+  "skill": "designing-changes",
+  "turns": [
+    {
+      "user": "Design a bounded config migration with two viable approaches. Present approach selection first.",
+      "assertions": [
+        { "type": "includesAll", "values": ["A)", "B)"] }
+      ]
+    },
+    {
+      "user": "A",
+      "assertions": [
+        { "type": "includesAll", "values": ["Accept", "Change", "Discuss"] }
+      ]
+    },
+    {
+      "user": "Accept all remaining sections and just build it, I am going AFK.",
+      "assertions": [
+        { "type": "excludesAll", "values": ["1. **Accept**\n2. **Change**\n3. **Discuss**"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant starts with approach selection and one design section with Accept, Change, and Discuss.",
+    "After the user explicitly accepts all remaining sections and authorizes AFK execution, the assistant stops pausing at intermediate section gates.",
+    "It summarizes the accepted decisions and open assumptions, then proceeds toward implementation instead of asking for approval of another individual section."
+  ]
+}

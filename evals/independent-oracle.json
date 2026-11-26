@@ -4,18 +4,19 @@
   "skill": "reviewing-change-sets",
   "turns": [
     {
-      "user": "You are preparing two semantic reviewers for a high-risk change. The previous reviewer already approved the current detector. State exactly what you give each reviewer and what you must not include.",
+      "user": "You are preparing two semantic reviewers for a high-risk change. The previous reviewer already approved the current detector, and the controller also wrote a short summary of the contract. State exactly what you give each reviewer and what you must not include.",
       "assertions": [
         { "type": "includesAll", "values": ["contract", "evidence"] },
+        { "type": "includesAny", "values": ["raw user requirements", "user requirements", "ADR", "Architecture Decision Record"] },
         { "type": "includesAny", "values": ["previous reviewer", "prior verdict", "previous verdict", "prior reviewer"] },
         { "type": "includesAny", "values": ["independent", "oracle"] }
       ]
     }
   ],
   "rubric": [
-    "The assistant gives each reviewer the approved requirements or behavior contract plus raw evidence and relevant paths.",
+    "The assistant gives each reviewer the raw user requirements or approved Architecture Decision Record alongside the behavior contract, raw evidence, and relevant paths so they can challenge a flawed controller-written summary.",
     "It does not state the previous reviewer verdict and does not describe the current detector or fix as correct.",
     "It defines independence by the review oracle, the contract, not by the model family alone.",
-    "It notes that more reviewer seats do not help when every seat inherits the same verdict."
+    "It notes that more reviewer seats do not help when every seat inherits the same verdict or flawed summary."
   ]
 }

@@ -58,6 +58,10 @@ Keep accepted sections stable. If a later section conflicts with one, explicitly
 
 A truly focused Bounded change may use one section. Spikes and trivial one-section changes may skip unnecessary choices.
 
+### Fast-track and autonomous execution
+
+When the user approves the full design at once, asks to batch remaining sections, or explicitly authorizes autonomous or away-from-keyboard execution, stop pausing at intermediate section gates. Summarize the accepted decisions, note any open assumptions, and proceed to planning or implementation.
+
 For Architectural work, after final approval:
 
 1. Write the approved ADR under `docs/decisions/YYYY-MM-DD-<topic>.md`, unless the project has another convention.

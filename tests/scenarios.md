@@ -64,7 +64,19 @@ Expected: freeze production edits, stop the patch and re-review loop, return to 
 
 Input: Prepare two semantic reviewers for a high-risk change that a previous reviewer already approved.
 
-Expected: give each reviewer the approved contract plus raw evidence and paths. Do not state the prior reviewer verdict or describe the current detector as correct. Define independence by the review oracle, the contract, not by the model family alone.
+Expected: give each reviewer the raw user requirements or approved ADR alongside the behavior contract plus raw evidence and paths. Do not state the prior reviewer verdict or describe the current detector as correct. Define independence by the review oracle, the contract, not by the model family alone.
+
+## Dynamic review model selection
+
+Input: Select reviewer models for a `dual` review when Pi exposes models across Anthropic, OpenAI Codex, Google Vertex Gemini, DeepSeek, Kimi, and GLM.
+
+Expected: inspect the live model catalog exposed by `subagent_start` instead of sticking to hardcoded providers, choose freely across any enabled providers while keeping `dual` seats in distinct model families, pass exact `provider/model` identifiers, and record each seat's actual model, effort, and role.
+
+## Fast-track design approval
+
+Input: After reviewing section 1 of a bounded design, the user says "accept all remaining sections and just build it; I am going AFK."
+
+Expected: stop pausing at intermediate section gates, summarize the accepted decisions and any assumptions, and proceed to approved implementation without further section prompts.
 
 ## Explicit stacked review
 

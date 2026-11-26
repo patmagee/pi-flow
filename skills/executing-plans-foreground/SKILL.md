@@ -13,7 +13,7 @@ The current Pi agent owns implementation. Subagents reduce context only when the
 
 1. Verify the workspace and branch. Do not implement on `main` or `master` without explicit user consent.
 2. Read the design and plan once. Raise only blockers, conflicting requirements, or irreversible choices.
-3. Create or resume `.pi/work/<branch>/progress.md` and `decisions.md`.
+3. Track active steps in `task_stack` when available. Create or resume `.pi/work/<branch>/progress.md` and `decisions.md` for durable resume state instead of duplicating every live checklist change in both places.
 4. Record the current change set, repository state, and exact verification commands.
 
 ## Plan fidelity
@@ -24,14 +24,15 @@ When the plan is committed, update it in the same commit as the departure. When 
 
 ## Execute each change set
 
-1. Mark the change set active in `progress.md`.
+1. Mark the active step in `task_stack` (or `progress.md` if `task_stack` is unavailable).
 2. Use `test-driving-changes` for behavior changes.
 3. Edit and integrate code in the foreground.
-4. Use `bg_run` for long tests and builds. Continue only independent work while they run.
-5. Run checkpoint validation once on the completed change set.
-6. Apply its Review gate with `reviewing-change-sets`.
-7. Verify review claims. Fix accepted findings in the foreground.
-8. Commit a coherent unit when requested or appropriate, then record the commit and evidence.
+4. Run focused tests and builds with `bash` (or batch independent read-only checks in `codemode`).
+5. Before checkpoint review, check diff size against the plan scope and repository pull request size guideline. If it exceeds that budget, cut dead code, speculative options, and scope creep, or split unrelated changes before dispatching reviewers, and update affected docs or guides.
+6. Run checkpoint validation once on the completed change set.
+7. Apply its Review gate with `reviewing-change-sets`.
+8. Verify review claims. Fix accepted findings in the foreground.
+9. Commit a coherent unit when requested or appropriate, then snapshot the commit and evidence in `progress.md`.
 
 ## Delegation policy
 
@@ -49,7 +50,7 @@ Pass subagents artifact paths, bounded questions, and an output contract. Do not
 
 ## Resume after compaction
 
-After each change set or important ruling, update `progress.md` with:
+At each change-set checkpoint, important ruling, or before compaction, snapshot `progress.md` with a clean full `write` rather than fragile partial `edit` patches. Include:
 
 - completed and current change sets;
 - files and commits;

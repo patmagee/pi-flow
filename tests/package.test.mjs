@@ -56,15 +56,17 @@ test("all workflow skills are discoverable and concise", async () => {
 
 test("skills contain the workflow decisions that prevent orchestration bloat", async () => {
   const required = {
-    "designing-changes": ["Spike", "Bounded", "Architectural", "A)", "Accept", "Change", "Discuss", "one section per turn"],
+    "designing-changes": ["Spike", "Bounded", "Architectural", "A)", "Accept", "Change", "Discuss", "one section per turn", "Fast-track"],
     "planning-change-sets": ["Outcome", "Test-first contract", "Review gate", "30–90 minutes"],
-    "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard"],
-    "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md", "Never let implementation drift silently", "same commit"],
+    "test-driving-changes": ["RED", "GREEN", "REFACTOR", "regression guard", "prototypes or personal tools"],
+    "executing-plans-foreground": ["foreground", "completion notification", "metadata", "progress.md", "task_stack", "diff size", "Never let implementation drift silently", "same commit"],
     "reviewing-change-sets": [
       "single", "layered", "dual", "stacked",
       "Accept", "Re-review", "testable claim", "needs evidence",
       "orchestrator", "oracle", "prior reviewer verdict", "attack matrix",
       "semantic seam", "designing-changes",
+      "subagent_start", "live catalog", "provider/model", "AI review",
+      "micro-diffs", "style nits",
       "exactly", "every", "any", "only", "always", "never",
     ],
     "systematic-debugging": ["Reproduce", "Evidence", "Hypothesis", "root cause", "three failed", "test-driving-changes", "An unverified code change is not a mitigation", "systemic root cause", "`designing-changes`"],
@@ -76,6 +78,9 @@ test("skills contain the workflow decisions that prevent orchestration bloat", a
       assert.ok(markdown.includes(term), `${name} must contain ${JSON.stringify(term)}`);
     }
   }
+
+  const execSkill = await text("skills/executing-plans-foreground/SKILL.md");
+  assert.equal(execSkill.includes("bg_run"), false, "executing-plans-foreground must not reference removed bg_run tool");
 });
 
 test("reviewing-change-sets defines four modes, oracle independence, and the stop rule", async () => {
@@ -136,12 +141,15 @@ test("documentation explains installation and Superpowers coexistence", async ()
   const review = frontmatter(await text("skills/reviewing-change-sets/SKILL.md"));
   assert.match(review.description, /receiving review feedback/);
 
-  // README documents the four modes and the review orchestrator policy.
+  // README documents the four modes, review orchestrator policy, and unconstrained model selection.
   for (const mode of ["single", "layered", "dual", "stacked"]) {
     assert.ok(readme.includes(mode), `README must document the ${mode} mode`);
   }
   assert.match(readme, /review orchestrator/);
   assert.match(readme, /two-pass-review/);
+  assert.match(readme, /live catalog/);
+  assert.equal(readme.includes("gpt-5.6-sol"), false, "README should not hardcode eval model names");
+  assert.equal(readme.includes("claude-sonnet-4-6"), false, "README should not hardcode eval model names");
 
   const license = await text("LICENSE");
   assert.match(license, /MIT License/);
@@ -164,6 +172,8 @@ test("distribution includes validation and representative scenarios", async () =
     "## Systemic root cause",
     "## Repeated defects from one seam",
     "## Independent review oracle",
+    "## Dynamic review model selection",
+    "## Fast-track design approval",
     "## Explicit stacked review",
     "## Review orchestrator is single source",
     "## Heuristic transform without a contract",

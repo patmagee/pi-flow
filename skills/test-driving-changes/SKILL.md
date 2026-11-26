@@ -48,3 +48,5 @@ A regression guard is evidence for a risky test, not a ritual for every test.
 ## Exceptions
 
 Generated output, configuration-only changes, and throwaway probes may need validation instead of unit tests. State the reason and obtain user approval when production behavior changes without a failing automated test.
+
+For prototypes or personal tools where the user explicitly requests minimal tests or lower ceremony, cover core invariants with focused tests and skip excessive acceptance-test boilerplate.

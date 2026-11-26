@@ -1,0 +1,22 @@
+{
+  "id": "dynamic-review-models",
+  "name": "Review model selection uses the full live Pi catalog without hardcoded providers",
+  "skill": "reviewing-change-sets",
+  "turns": [
+    {
+      "user": "A high-risk permissions change needs dual review. Pi currently exposes enabled models across Anthropic, OpenAI Codex, Google Vertex Gemini, DeepSeek, Kimi, and GLM in subagent_start. Explain how you choose the reviewer models, what identifier format you pass, and what metadata you record for the report.",
+      "assertions": [
+        { "type": "includesAll", "values": ["dual", "subagent_start"] },
+        { "type": "includesAny", "values": ["live catalog", "enabled providers", "all enabled", "available models"] },
+        { "type": "includesAny", "values": ["provider/model", "exact"] },
+        { "type": "includesAny", "values": ["effort", "role", "AI review"] }
+      ]
+    }
+  ],
+  "rubric": [
+    "The assistant selects dual review with two semantic reviewers from distinct model families across any enabled providers, rejecting two models from the same family even if served by different providers.",
+    "It inspects the live model catalog exposed by subagent_start and does not constrain itself to a hardcoded two-provider default.",
+    "It passes exact provider/model identifiers from the live catalog to avoid ambiguous or retired model errors.",
+    "It records each seat's actual executed model, reasoning effort, and review role for the report and pull request AI review receipts."
+  ]
+}
